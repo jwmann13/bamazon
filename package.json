@@ -1,0 +1,24 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "node based shopping app",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jwmann13/bamazon.git"
+  },
+  "author": "Jeffrey Mann",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jwmann13/bamazon/issues"
+  },
+  "homepage": "https://github.com/jwmann13/bamazon#readme",
+  "dependencies": {
+    "easy-table": "^1.1.1",
+    "inquirer": "^7.0.0",
+    "mysql": "^2.17.1"
+  }
+}
