@@ -13,6 +13,13 @@ CREATE TABLE products (
     PRIMARY KEY (item_id)
 );
 
+CREATE TABLE departments (
+    department_id INT NOT NULL AUTO_INCREMENT,
+    department_name VARCHAR(45) NULL,
+    over_head_costs DECIMAL (10, 2) NULL,
+    PRIMARY KEY (department_id)
+);
+
 INSERT INTO products
 VALUES (null, 'shoes', 'clothing', 0, 30.00, 10), 
     (null, 'shirts', 'clothing', 0, 10.00, 20),
