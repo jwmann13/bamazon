@@ -1,12 +1,14 @@
 const mysql = require("mysql");
-const inquirer = require('inquirer');
-const Table = require('easy-table');
+const inquirer = require("inquirer");
+const Table = require("easy-table");
+
+const PORT = process.env.PORT || 3306
 
 let connection = mysql.createConnection({
     host: "localhost",
 
     // Your port; if not 3306
-    port: 3306,
+    port: PORT,
 
     // Your username
     user: "root",
@@ -19,9 +21,27 @@ let connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
-      afterConnection();
-    propmtID();
+    afterConnection();
 });
+
+function afterConnection() {
+    let t = new Table();
+
+    connection.query("SELECT * FROM products", function (err, res) {
+        if (err) throw err;
+        res.forEach(item => {
+            for (const key in item) {
+                if (item.hasOwnProperty(key)) {
+                    const element = item[key];
+                    t.cell(key, element);
+                }
+            }
+            t.newRow();
+        })
+        console.log('\n' + t.toString() + '\n');
+        propmtID();
+    });
+}
 
 function propmtID() {
     inquirer.prompt([{
@@ -30,53 +50,69 @@ function propmtID() {
     }]).then(response => pickItem(parseInt(response.customerID)))
 }
 
-function promptQuantity() {
-    inquirer.prompt([{
-        name: "customerQuantity",
-        message: "How many would you like?"
-    }]).then(response => pickQuantity(response.customerQuantity));
-}
-
 function pickItem(id) {
     let t = new Table();
 
-    let query = connection.query("SELECT * FROM products WHERE item_id=?", [id], (err, response) => {
+    connection.query("SELECT * FROM products WHERE item_id=?", [id], (err, response) => {
         if (err) throw err;
-        // console.log(`item_id | product_name | department_name | price | stock_quantity`);
 
         response.forEach(item => {
-            t.cell('item_id', item.item_id);
-            t.cell('product_name', item.product_name);
-            t.cell('department_name', item.department_name);
-            t.cell('price', parseFloat(item.price).toFixed(2));
-            t.cell('stock_quantity', parseInt(item.stock_quantity))
+            for (const key in item) {
+                if (item.hasOwnProperty(key)) {
+                    const element = item[key];
+                    t.cell(key, element);
+                }
+            }
             t.newRow();
             console.log('\n' + t.toString());
-            // console.log(`${item.item_id} | ${item.product_name} | ${item.department_name} | ${} | ${parseInt(item.stock_quantity)}`);
         });
+
+        promptQuantity(connection.escape(id));
     });
-    // console.log(query.sql);
-    connection.end();
 }
 
-function pickQuantity(quantity) {
-    
+function promptQuantity(id) {
+    inquirer.prompt([{
+        name: "customerQuantity",
+        message: "How many would you like?"
+    }]).then(response => updateQuantity(response.customerQuantity, id));
 }
 
-function afterConnection() {
+function updateQuantity(quantity, id) {
     let t = new Table();
 
-    connection.query("SELECT * FROM products", function (err, res) {
+    connection.query("SELECT * FROM products WHERE item_id=?", [id], (err, selectRes) => {
         if (err) throw err;
-        res.forEach(item => {
-            t.cell('item_id', item.item_id);
-            t.cell('product_name', item.product_name);
-            t.cell('department_name', item.department_name);
-            t.cell('price', parseFloat(item.price).toFixed(2));
-            t.cell('stock_quantity', parseInt(item.stock_quantity))
+        let queryStr = `UPDATE products SET stock_quantity = stock_quantity - ${connection.escape(quantity)} WHERE item_id = ${connection.escape(id)}`;
+        // console.log(selectRes)
+
+        if (selectRes[0].stock_quantity - quantity > 0) {
+            connection.query(queryStr, (err, updateRes) => {
+                if (err) throw err;
+                // console.log(updateRes);
+                
+            });
+
+            selectRes.forEach(item => {
+                for (const key in item) {
+                    if (item.hasOwnProperty(key)){
+                        t.cell(key, item[key]);
+                    }
+                }
+            });
             t.newRow();
-        })
-        console.log('\n' + t.toString() + '\n');
-        // connection.end();
-    });
+
+            console.log(t.toString());
+            connection.end();
+        } else {
+            console.log("There is not enough stock of that item to fulfill your order!");
+            propmtID();
+        }
+    })
+}
+
+class Transaction {
+    constructor() {
+        this.item = null;
+    }
 }
