@@ -83,7 +83,7 @@ function updateQuantity(quantity, id) {
 
     connection.query("SELECT * FROM products WHERE item_id=?", [id], (err, selectRes) => {
         if (err) throw err;
-        let queryStr = `UPDATE products SET stock_quantity = stock_quantity - ${connection.escape(quantity)} WHERE item_id = ${connection.escape(id)}`;
+        let queryStr = `UPDATE products SET stock_quantity = stock_quantity - ${connection.escape(quantity)}, product_sales = price * ${connection.escape(quantity)} WHERE item_id = ${connection.escape(id)}`;
         // console.log(selectRes)
 
         if (selectRes[0].stock_quantity - quantity > 0) {
@@ -93,16 +93,17 @@ function updateQuantity(quantity, id) {
                 
             });
 
-            selectRes.forEach(item => {
-                for (const key in item) {
-                    if (item.hasOwnProperty(key)){
-                        t.cell(key, item[key]);
-                    }
-                }
-            });
-            t.newRow();
+            console.log(`Your order total is: $${parseFloat(selectRes[0].price).toFixed(2) * quantity}`)
+            // selectRes.forEach(item => {
+            //     for (const key in item) {
+            //         if (item.hasOwnProperty(key)){
+            //             t.cell(key, item[key]);
+            //         }
+            //     }
+            // });
+            // t.newRow();
+            // console.log(t.toString());
 
-            console.log(t.toString());
             connection.end();
         } else {
             console.log("There is not enough stock of that item to fulfill your order!");
