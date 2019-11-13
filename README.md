@@ -29,17 +29,17 @@ npm install easy-table
 Bamazon runs through node and offers features for three different kinds of users:
 
 ```
-node bamazonCustomer
+node scripts/bamazonCustomer
 ```
 bamazonCustomer.js displays a table of all products and prompts the user to pick the id of the product the want to buy. Another prompt asks the user to enter a quantity of their item and finally the user is shown the total of the order and the connection closes.
 
 ```
-node bamazonManager
+node scripts/bamazonManager
 ```
 bamazonManager.js prompts the user with four choices and an exit command. The "View Products for Sale" command prints a table of all the available products' names, departments, price, stock quantity, and sales. The "View Low Inventory" command prints all items with a stock quantity below 5. The "Add to Inventory" command allows the user to add more stock of a particular item. The "Add New Product" command allows the user to create a new product and add it to the database.
 
 ```
-node bamazonSupervisor
+node scripts/bamazonSupervisor
 ```
 bamazonSupervisor.js prompts the user with two choices and an exit command. The "View Product Sales by Department" command shows the user a table with the names, overhead costs, sales, and profits of each each department. The "Create New Department" command allows the user to create a new department to add to the database.
 **(note: bamazonSupervisor is not fully functional yet)**
