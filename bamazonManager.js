@@ -35,7 +35,6 @@ function manager() {
         switch (answer.commands) {
             case "View Products for Sale":
                 viewProducts();
-                // console.log('ur viewing it')
                 break;
 
             case "View Low Inventory":
