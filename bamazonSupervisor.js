@@ -15,7 +15,8 @@ let connection = mysql.createConnection({
 
     // Your password
     password: "docker",
-    database: "bamazon"
+    database: "bamazon",
+    multipleStatements: true
 });
 
 connection.connect(function (err) {
@@ -33,7 +34,7 @@ function supervisor() {
     }]).then(answer => {
         switch (answer.commands) {
             case "View Product Sales by Department":
-                viewSales();
+                console.log(viewSales());
                 break;
 
             case "Create New Department":
@@ -77,6 +78,7 @@ function viewSales() {
                         over_head_costs: Math.floor(10000 * Math.random())
                     }, (err3) => {
                         if (err3) throw err3;
+                        counter = 0;
                         connection.query("SELECT * FROM departments", (err4, printRes) => {
                             if (err4) throw err4;
                             printRes.forEach(dept => {
@@ -87,9 +89,13 @@ function viewSales() {
                                     }
                                 }
                                 t.newRow();
+
                             });
-                            console.log(t.toString());
+                            console.log(counter)
+                            counter ++;
+
                         });
+                        return t.toString();
                     });
 
                     // add department name to array; results should only contain unique department names
