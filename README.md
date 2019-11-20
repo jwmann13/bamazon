@@ -2,6 +2,8 @@
 
 Bamazon is a node-based model of a retailer's database. Using a SQL database and the Node MySQL package, three Node scripts model the typical interactions of a customer, a store manager, and a store supervisor.
 
+View demo at: https://youtu.be/PA6sppVcifU
+
 ## Getting Started
 
 ### Installing
