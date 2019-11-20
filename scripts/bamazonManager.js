@@ -142,6 +142,7 @@ function addItem() {
         connection.query("INSERT INTO products SET ?", {
             product_name: answer.product_name,
             department_name: answer.department_name,
+            product_sales: 0,
             price: parseFloat(answer.price).toFixed(2),
             stock_quantity: parseInt(answer.stock_quantity)
         }, (err) => {
