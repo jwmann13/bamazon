@@ -55,13 +55,13 @@ function viewSales() {
     let t = new Table();
 
     // delete contents of departments
-    connection.query("DELETE FROM departments", (err1) => {
+    connection.query("DELETE FROM departments", (err1, delRes) => {
         if (err1) throw err1;
-
+        console.log("DELETE", delRes);
         // select departments from products
         connection.query("SELECT department_name FROM products", (err2, selectRes) => {
             if (err2) throw err2;
-
+            console.log("SELECT", "\u1000",selectRes)
             // array for bespoke departments
             let eachDept = [];
 
@@ -76,11 +76,12 @@ function viewSales() {
                         department_id: null,
                         department_name: item.department_name,
                         over_head_costs: Math.floor(10000 * Math.random())
-                    }, (err3) => {
+                    }, (err3, insertRes) => {
                         if (err3) throw err3;
-                        counter = 0;
+                        console.log("INSERT", insertRes);
                         connection.query("SELECT * FROM departments", (err4, printRes) => {
                             if (err4) throw err4;
+                            console.log("PRINT", printRes);
                             printRes.forEach(dept => {
                                 for (const key in dept) {
                                     if (dept.hasOwnProperty(key)) {
@@ -89,13 +90,9 @@ function viewSales() {
                                     }
                                 }
                                 t.newRow();
-
-                            });
-                            console.log(counter)
-                            counter ++;
-
+                            });                            
+                            // console.log(t.toString());
                         });
-                        return t.toString();
                     });
 
                     // add department name to array; results should only contain unique department names
@@ -105,6 +102,8 @@ function viewSales() {
         })
     });
 }
+
+
 
 function createDepartment() {
 
